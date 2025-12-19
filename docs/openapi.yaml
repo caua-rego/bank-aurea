@@ -1,0 +1,136 @@
+openapi: 3.0.3
+info:
+  title: Bank Aurea API
+  version: 1.0.0
+  description: Minimal OpenAPI surface for authentication, accounts, transactions, and profile.
+servers:
+  - url: http://localhost:5001
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user and bootstrap an account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, email, password]
+              properties:
+                username: {type: string}
+                email: {type: string, format: email}
+                password: {type: string, format: password}
+      responses:
+        '201': {description: User created}
+        '400': {description: Invalid input}
+  /auth/login:
+    post:
+      summary: Authenticate user via session cookie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: {type: string, format: email}
+                password: {type: string, format: password}
+      responses:
+        '200': {description: Authenticated}
+        '401': {description: Invalid credentials}
+  /auth/logout:
+    post:
+      summary: Logout current session
+      responses:
+        '200': {description: Logged out}
+  /auth/me:
+    get:
+      summary: Return current authenticated user
+      responses:
+        '200': {description: User data}
+        '401': {description: Unauthorized}
+  /dashboard:
+    get:
+      summary: Get account, card, and transaction overview
+      responses:
+        '200': {description: Dashboard payload}
+        '401': {description: Unauthorized}
+  /transfer:
+    post:
+      summary: Transfer funds to another account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [target_account, amount]
+              properties:
+                target_account: {type: string}
+                amount: {type: string, example: "100.00"}
+      responses:
+        '200': {description: Transfer success}
+        '400': {description: Validation or business error}
+        '401': {description: Unauthorized}
+  /deposit:
+    post:
+      summary: Deposit funds to current user's account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount]
+              properties:
+                amount: {type: string, example: "50.00"}
+      responses:
+        '200': {description: Deposit success}
+        '400': {description: Validation error}
+        '401': {description: Unauthorized}
+  /withdraw:
+    post:
+      summary: Withdraw funds from current user's account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount]
+              properties:
+                amount: {type: string, example: "20.00"}
+      responses:
+        '200': {description: Withdrawal success}
+        '400': {description: Validation error}
+        '401': {description: Unauthorized}
+  /users/profile:
+    put:
+      summary: Update profile preferences and optional image upload
+      requestBody:
+        required: false
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                preferences: {type: string, description: JSON stringified preferences}
+                profile_image: {type: string, format: binary}
+          application/json:
+            schema:
+              type: object
+              properties:
+                preferences: {type: object}
+                profile_image: {type: string, description: URL or base64}
+      responses:
+        '200': {description: Profile updated}
+        '401': {description: Unauthorized}
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session
+security:
+  - cookieAuth: []

@@ -9,3 +9,5 @@ Flask-Cors
 email_validator
 gunicorn
 pytest
+redis
+psycopg2-binary

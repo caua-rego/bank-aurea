@@ -1,4 +1,6 @@
-from flask import Flask
+import logging
+from time import perf_counter
+from flask import Flask, request
 from config import config
 from app.extensions import db, login_manager, bcrypt, csrf, migrate, limiter
 
@@ -12,13 +14,13 @@ def create_app(config_name='default'):
     bcrypt.init_app(app)
     csrf.init_app(app)
     migrate.init_app(app, db)
-    limiter.init_app(app)
+    limiter.init_app(app, storage_uri=app.config.get('RATELIMIT_STORAGE_URI'))
     
     # CORS
     from flask_cors import CORS
     CORS(app, supports_credentials=True, resources={
         r"/*": {
-            "origins": ["http://localhost:4200", "http://127.0.0.1:4200", "http://localhost:5001", "http://127.0.0.1:5001"],
+            "origins": app.config.get('CORS_ALLOWED_ORIGINS', []),
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"]
         }
@@ -30,6 +32,31 @@ def create_app(config_name='default'):
     @login_manager.unauthorized_handler
     def unauthorized():
         return {"error": "Unauthorized"}, 401
+
+    # Basic request logging with latency
+    @app.before_request
+    def start_timer():
+        request._start_time = perf_counter()
+
+    @app.after_request
+    def log_request(response):
+        try:
+            duration_ms = None
+            if hasattr(request, '_start_time'):
+                duration_ms = round((perf_counter() - request._start_time) * 1000, 2)
+            app.logger.info(
+                "request",
+                extra={
+                    "method": request.method,
+                    "path": request.path,
+                    "status": response.status_code,
+                    "duration_ms": duration_ms,
+                    "remote_addr": request.remote_addr,
+                },
+            )
+        except Exception:
+            pass
+        return response
     
     # Register Blueprints
     from .controllers.main_controller import main_bp
@@ -56,20 +83,14 @@ def create_app(config_name='default'):
     from .controllers.card_controller import card_bp
     app.register_blueprint(card_bp, url_prefix='/cards')
 
-    if not app.debug and not app.testing:
-        import logging
-        from logging.handlers import RotatingFileHandler
-        import os
-        
-        if not os.path.exists('logs'):
-            os.mkdir('logs')
-        file_handler = RotatingFileHandler('logs/aurea.log', maxBytes=10240, backupCount=10)
-        file_handler.setFormatter(logging.Formatter(
-            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-        ))
-        file_handler.setLevel(logging.INFO)
-        app.logger.addHandler(file_handler)
-
+    # Logging configuration
+    if not app.debug:
+        handler = logging.StreamHandler()
+        handler.setLevel(logging.INFO)
+        formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+        handler.setFormatter(formatter)
+        if not app.logger.handlers:
+            app.logger.addHandler(handler)
         app.logger.setLevel(logging.INFO)
         app.logger.info('Aurea Startup')
     
