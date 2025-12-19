@@ -8,6 +8,7 @@ from flask import Blueprint, request
 from flask_login import login_required, current_user
 from app.services.transaction_service import TransactionService
 from app.models.account import Account
+from app.models.card import Card
 from app.exceptions import BankError
 from app.extensions import limiter
 
@@ -36,22 +37,24 @@ def dashboard():
             "target": t.target_account_id
         })
         
-    # Generate Fictitious Card Data (Deterministic based on Account ID)
-    # Format: 4532 XXXX XXXX <ID padded>
-    card_suffix = f"{account.id:04d}"
-    card_number = f"4532 9812 7344 {card_suffix}"
+    # Fetch Primary Card (First one for now)
+    card = Card.query.filter_by(user_id=current_user.id).first()
     
+    card_data = None
+    if card:
+        card_data = card.to_dict()
+    else:
+        # Fallback or empty if no cards
+        # If we want to show a default "Account Card" tied to tier:
+        pass
+
     return {
         "account": {
+            "id": account.id,
             "number": account.number,
             "balance": str(account.balance)
         },
-        "card": {
-            "number": card_number,
-            "holder": current_user.username.upper(),
-            "expiry": "12/30",
-            "cvv": "842"
-        },
+        "card": card_data,
         "transactions": tx_list
     }, 200
 
@@ -97,6 +100,8 @@ def deposit():
         return {"success": True, "message": "Deposit successful"}, 200
     except BankError as e:
         return {"error": str(e)}, 400
+    except Exception:
+        return {"error": "An unexpected error occurred"}, 500
 
 @main_bp.route('/withdraw', methods=['POST'])
 @login_required
@@ -113,3 +118,5 @@ def withdraw():
         return {"success": True, "message": "Withdrawal successful"}, 200
     except BankError as e:
         return {"error": str(e)}, 400
+    except Exception:
+        return {"error": "An unexpected error occurred"}, 500

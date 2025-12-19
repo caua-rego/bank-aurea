@@ -47,7 +47,7 @@
                             </span>
                         </td>
                         <td>
-                            <button class="btn-action">Edit</button>
+                            <button class="btn-action" (click)="openEdit(user)">Edit</button>
                         </td>
                     </tr>
                     }
@@ -58,4 +58,34 @@
         <div class="loading">Authenticating Admin Access...</div>
         }
     </div>
+
+    @if (editingUser()) {
+    <div class="modal-overlay" (click)="closeEdit()">
+        <div class="modal" (click)="$event.stopPropagation()">
+            <h3>Edit User #{{ editingUser()!.id }}</h3>
+            <form [formGroup]="editForm" (ngSubmit)="saveEdit()">
+                <label>Username</label>
+                <input type="text" formControlName="username">
+
+                <label>Email</label>
+                <input type="email" formControlName="email">
+
+                <label>Balance</label>
+                <input type="number" formControlName="balance" step="0.01">
+
+                <label class="checkbox">
+                    <input type="checkbox" formControlName="is_admin"> Admin
+                </label>
+
+                <div class="actions">
+                    <button type="button" class="btn ghost" (click)="closeEdit()">Cancel</button>
+                    <button type="submit" class="btn primary" [disabled]="editForm.invalid">Save</button>
+                </div>
+            </form>
+            @if (message()) {
+                <div class="status">{{ message() }}</div>
+            }
+        </div>
+    </div>
+    }
 </div>

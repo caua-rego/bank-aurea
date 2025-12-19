@@ -24,3 +24,9 @@ config = {
     'production': ProductionConfig,
     'default': DevelopmentConfig
 }
+
+# Ensure cookies work across ports (CORS) but only on same-site (Lax is good for 127.0.0.1)
+Config.SESSION_COOKIE_SAMESITE = 'Lax'
+Config.SESSION_COOKIE_SECURE = False   # Set to True in Production with HTTPS
+Config.REMEMBER_COOKIE_SAMESITE = 'Lax'
+Config.REMEMBER_COOKIE_SECURE = False

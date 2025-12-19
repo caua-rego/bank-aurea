@@ -1,106 +1,119 @@
 :host {
+    display: block;
+}
+
+.auth-page {
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background: #000000;
-    /* Deep Black for max contrast */
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+    padding: 20px;
+    background: transparent;
+    /* Handled by global body mesh gradient */
 }
 
-.login-container {
+.auth-card {
     width: 100%;
     max-width: 440px;
-    padding: 60px 40px;
+    padding: 60px 50px;
     text-align: center;
+}
 
-    h2 {
-        font-size: 2.5rem;
-        font-weight: 600;
-        margin-bottom: 50px;
+.brand-header {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    .symbol {
+        color: var(--accent-gold);
+    }
+}
+
+h2 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin: 0 0 10px;
+    background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+    font-size: 0.95rem;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+
+    label {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        font-weight: 500;
+        margin-left: 4px;
+    }
+}
+
+.error-banner {
+    background: rgba(255, 69, 58, 0.15);
+    border: 1px solid rgba(255, 69, 58, 0.3);
+    color: #ff453a;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-gold {
+    width: 100%;
+    margin-top: 10px;
+    box-shadow: 0 10px 30px rgba(212, 160, 23, 0.15);
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+}
+
+.auth-footer {
+    margin-top: 40px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+
+    a {
         color: white;
-        letter-spacing: -0.5px;
-    }
-
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .form-group {
-        position: relative;
-
-        input {
-            width: 100%;
-            background: transparent;
-            border: 1px solid #444;
-            border-radius: 12px;
-            padding: 18px 20px;
-            font-size: 17px;
-            color: white;
-            transition: all 0.2s ease;
-
-            &:focus {
-                border-color: #2997ff;
-                /* Apple Blue focus */
-                box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.2);
-                outline: none;
-            }
-
-            &::placeholder {
-                color: #666;
-            }
-        }
-    }
-
-    button {
-        margin-top: 20px;
-        width: 100%;
-        padding: 18px;
-        border-radius: 12px;
-        font-size: 17px;
-        font-weight: 600;
-        cursor: pointer;
-        background: #007aff;
-        /* System Blue */
-        color: white;
-        border: none;
-        transition: transform 0.1s, background-color 0.2s;
+        text-decoration: none;
+        font-weight: 500;
 
         &:hover {
-            background: #0077ed;
-        }
-
-        &:active {
-            transform: scale(0.98);
-        }
-
-        &:disabled {
-            background: #333;
-            color: #666;
-            cursor: not-allowed;
+            text-decoration: underline;
         }
     }
 
-    .links {
-        margin-top: 40px;
-        font-size: 14px;
+    .back-link {
+        display: block;
+        margin-top: 20px;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
 
-        a {
-            color: #2997ff;
+        &:hover {
+            color: white;
             text-decoration: none;
-            font-weight: 500;
-
-            &:hover {
-                text-decoration: underline;
-            }
         }
-    }
-
-    .error {
-        color: #ff453a;
-        font-size: 14px;
-        margin-top: 10px;
     }
 }

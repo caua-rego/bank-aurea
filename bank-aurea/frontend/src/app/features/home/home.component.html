@@ -1,39 +1,57 @@
-<div class="titanium-home">
-    <nav class="nav-header">
-        <div class="brand">AURÉA</div>
-        <div class="nav-links">
-            <a routerLink="/login" class="nav-item">Sign In</a>
-            <a routerLink="/register" class="nav-btn">Apply Now</a>
-        </div>
-    </nav>
+<div class="page-wrapper">
+    <app-navbar></app-navbar>
 
-    <section class="hero-section">
-        <div class="hero-content">
-            <h1 class="hero-title">Banking.<br><span class="gradient-text">Reimagined.</span></h1>
-            <p class="hero-subtitle">The simplicity of cash. The power of algorithms.</p>
-        </div>
+    <div class="titanium-home page-content">
+        <!-- Removed Custom Nav -->
 
-        <div class="card-visual-container">
-            <div class="titanium-card">
-                <div class="card-chip"></div>
-                <div class="card-text">AURÉA</div>
-                <div class="card-number">•••• •••• •••• 8842</div>
+        <section class="hero-section">
+            <div class="cursor-glow-overlay" 
+                 [class.hidden]="isCardHover"
+                 [style.--glow-x]="glowX"
+                 [style.--glow-y]="glowY"
+                 [style.--glow-strength]="glowStrength"></div>
+
+            <div class="hero-content">
+                <h1 class="hero-title">Banking.<br><span class="gradient-text">Reimagined.</span></h1>
+                <p class="hero-subtitle">The simplicity of cash. The power of algorithms.</p>
             </div>
-        </div>
-    </section>
 
-    <section class="info-section">
-        <div class="info-block">
-            <h2>0.00% Fees</h2>
-            <p>No annual fees. No foreign transaction fees. No late fees.</p>
-        </div>
-        <div class="info-block">
-            <h2>Titanium</h2>
-            <p>Laser-etched metal. Minimalist design. Heavy in hand.</p>
-        </div>
-        <div class="info-block">
-            <h2>Privacy</h2>
-            <p>Your data stays on your device. Not on our servers.</p>
-        </div>
-    </section>
+              <div class="card-visual-container"
+                  [class.card-glow-active]="isCardHover"
+                  [class.cursor-glow-hidden]="isCardHover"
+                  [style.--glow-x]="glowX"
+                  [style.--glow-y]="glowY"
+                  [style.--glow-strength]="glowStrength">
+                 <div #card
+                     class="titanium-card"
+                     [style.--tilt-x]="tiltX"
+                     [style.--tilt-y]="tiltY"
+                     [style.--card-glow-x]="cardGlowX"
+                     [style.--card-glow-y]="cardGlowY"
+                     [style.--card-glow-strength]="cardGlowStrength"
+                     (pointerenter)="onCardEnter()"
+                     (pointerleave)="onCardLeave()">
+                    <div class="card-chip"></div>
+                    <div class="card-text">AURÉA</div>
+                    <div class="card-number">•••• •••• •••• 8842</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section">
+            <div class="info-block">
+                <h2>0.00% Fees</h2>
+                <p>No annual fees. No foreign transaction fees. No late fees.</p>
+            </div>
+            <div class="info-block">
+                <h2>Titanium</h2>
+                <p>Laser-etched metal. Minimalist design. Heavy in hand.</p>
+            </div>
+            <div class="info-block">
+                <h2>Privacy</h2>
+                <p>Your data stays on your device. Not on our servers.</p>
+            </div>
+        </section>
+    </div>
+    <app-footer></app-footer>
 </div>

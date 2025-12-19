@@ -1,5 +1,27 @@
-# Database files
-*.db
+# OS
+.DS_Store
 
-# Python cache
+# Python
 __pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+
+# Flask/instance data
+instance/
+*.db
+*.sqlite
+app.db
+app/static/uploads/
+/static/uploads/
+
+# Node/Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/cache/
+
+# Tooling
+.pytest_cache/
+.coverage
+.vscode/

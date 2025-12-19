@@ -9,4 +9,17 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   protected readonly title = signal('frontend');
+  showCookieConsent = signal(false);
+
+  constructor() {
+    const consent = localStorage.getItem('cookieConsent');
+    if (!consent) {
+      this.showCookieConsent.set(true);
+    }
+  }
+
+  acceptCookies() {
+    localStorage.setItem('cookieConsent', 'true');
+    this.showCookieConsent.set(false);
+  }
 }

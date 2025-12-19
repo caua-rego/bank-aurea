@@ -16,7 +16,13 @@ def create_app(config_name='default'):
     
     # CORS
     from flask_cors import CORS
-    CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:4200"}})
+    CORS(app, supports_credentials=True, resources={
+        r"/*": {
+            "origins": ["http://localhost:4200", "http://127.0.0.1:4200", "http://localhost:5001", "http://127.0.0.1:5001"],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"]
+        }
+    })
 
     # Login Manager setup
     login_manager.login_view = None # Disable redirect
@@ -40,6 +46,15 @@ def create_app(config_name='default'):
     # Register Admin Blueprint
     from .controllers.admin_controller import admin_bp
     app.register_blueprint(admin_bp)
+
+    # Register User Blueprint
+    # Register User Blueprint
+    from .controllers.user_controller import user_bp
+    app.register_blueprint(user_bp, url_prefix='/users')
+    
+    # Register Card Blueprint
+    from .controllers.card_controller import card_bp
+    app.register_blueprint(card_bp, url_prefix='/cards')
 
     if not app.debug and not app.testing:
         import logging

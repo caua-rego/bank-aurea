@@ -1,1 +1,13 @@
 <router-outlet></router-outlet>
+
+@if (showCookieConsent()) {
+<div class="cookie-banner page-fade-in">
+    <div class="content">
+        <p>
+            We use cookies to improve your experience and securely store your data.
+            By continuing, you agree to our usage of cookies.
+        </p>
+        <button (click)="acceptCookies()">Accept & Continue</button>
+    </div>
+</div>
+}

@@ -25,9 +25,13 @@ export interface AdminDashboardData {
 })
 export class AdminService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://127.0.0.1:5001/admin';
+    private apiUrl = 'http://localhost:5001/admin';
 
     getDashboard(): Observable<AdminDashboardData> {
         return this.http.get<AdminDashboardData>(`${this.apiUrl}/`, { withCredentials: true });
+    }
+
+    updateUser(userId: number, payload: Partial<UserDTO>): Observable<UserDTO> {
+        return this.http.put<UserDTO>(`${this.apiUrl}/users/${userId}`, payload, { withCredentials: true });
     }
 }

@@ -13,14 +13,17 @@ export interface Transaction {
 
 export interface DashboardData {
   account: {
+    id?: number;
     number: string;
     balance: string;
   };
   card: {
+    id?: number;
     number: string;
     holder: string;
     expiry: string;
     cvv: string;
+    tier?: 'free' | 'gold' | 'titanium' | 'adamantium';
   };
   transactions: Transaction[];
 }
@@ -30,7 +33,7 @@ export interface DashboardData {
 })
 export class TransactionService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://127.0.0.1:5001/main';
+  private apiUrl = 'http://localhost:5001';
 
   getDashboard(): Observable<DashboardData> {
     return this.http.get<DashboardData>(`${this.apiUrl}/dashboard`, { withCredentials: true });

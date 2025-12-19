@@ -1,25 +1,42 @@
-<div class="login-container">
-    <h2>Create your Auréa ID</h2>
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-        <div class="form-group">
-            <input id="username" type="text" placeholder="Full Name" formControlName="username">
-        </div>
-        <div class="form-group">
-            <input id="email" type="email" placeholder="name@example.com" formControlName="email">
-        </div>
-        <div class="form-group">
-            <input id="password" type="password" placeholder="Password" formControlName="password">
+<div class="auth-page page-fade-in">
+    <div class="auth-card liquid-card">
+        <div class="brand-header">
+            <span class="symbol">✦</span> Bank Auréa
         </div>
 
-        @if (errorMessage) {
-        <div class="error">{{ errorMessage }}</div>
-        }
+        <h2>Become a Member</h2>
+        <p class="subtitle">Experience the future of banking today.</p>
 
-        <button type="submit" [disabled]="!registerForm.valid">Continue</button>
-        <div class="links">
-            Already have an ID? <a routerLink="/login">Log in here.</a>
-            <br><br>
-            <a routerLink="/">Back to Home</a>
-        </div>
-    </form>
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label for="username">Full Name</label>
+                <input id="username" type="text" placeholder="John Doe" formControlName="username">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input id="email" type="email" placeholder="name@example.com" formControlName="email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" type="password" placeholder="••••••••" formControlName="password">
+            </div>
+
+            @if (errorMessage) {
+            <div class="error-banner">
+                <span class="icon">⚠️</span> {{ errorMessage }}
+            </div>
+            }
+
+            <button type="submit" class="btn-gold" [disabled]="!registerForm.valid">
+                Create Account
+            </button>
+
+            <div class="auth-footer">
+                <p>Already have an ID? <a routerLink="/login">Sign In</a></p>
+                <a routerLink="/" class="back-link">Return Home</a>
+            </div>
+        </form>
+    </div>
 </div>

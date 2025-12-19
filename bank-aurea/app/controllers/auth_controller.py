@@ -32,8 +32,10 @@ def register():
         return {"error": "Missing fields"}, 400
         
     try:
-        auth_service.register_user(username, email, password)
-        return {"success": True, "message": "User registered"}, 201
+        user = auth_service.register_user(username, email, password)
+        # Auto-login after register
+        login_user(user)
+        return {"success": True, "message": "User registered", "user": user.to_dict()}, 201
     except Exception as e:
          return {"error": str(e)}, 400
 
@@ -41,7 +43,7 @@ def register():
 @limiter.limit("10 per minute")
 def login():
     if current_user.is_authenticated:
-        return {"success": True, "user": current_user.username}, 200
+        return {"success": True, "user": current_user.to_dict()}, 200
         
     data = request.get_json()
     if not data:
@@ -53,7 +55,7 @@ def login():
     user = auth_service.authenticate_user(email, password)
     if user:
         login_user(user)
-        return {"success": True, "user": user.username, "is_admin": user.is_admin}, 200
+        return {"success": True, "user": user.to_dict()}, 200
     else:
         return {"error": "Invalid credentials"}, 401
 
@@ -65,9 +67,4 @@ def logout():
 @auth_bp.route('/me', methods=['GET'])
 @login_required
 def me():
-    return {
-        "id": current_user.id,
-        "username": current_user.username,
-        "email": current_user.email,
-        "is_admin": current_user.is_admin
-    }, 200
+    return current_user.to_dict(), 200

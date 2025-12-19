@@ -15,6 +15,9 @@ import { CreditCardsComponent } from './features/public/credit-cards/credit-card
 import { InvestmentsComponent } from './features/public/investments/investments';
 import { BusinessComponent } from './features/public/business/business';
 import { ContactComponent } from './features/public/contact/contact';
+import { OverviewComponent } from './features/dashboard/overview/overview.component';
+import { CardsComponent } from './features/cards/cards.component';
+import { SettingsComponent } from './features/settings/settings.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -33,7 +36,12 @@ export const routes: Routes = [
     {
         path: 'dashboard',
         component: DashboardComponent,
-        canActivate: [authGuard]
+        canActivate: [authGuard],
+        children: [
+            { path: '', component: OverviewComponent },
+            { path: 'cards', component: CardsComponent },
+            { path: 'settings', component: SettingsComponent }
+        ]
     },
     {
         path: 'admin',

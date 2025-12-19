@@ -4,8 +4,14 @@ import { Router } from '@angular/router';
 import { tap, catchError, of, Observable } from 'rxjs';
 
 export interface User {
+  id?: number;
   username: string;
+  email?: string;
   is_admin: boolean;
+  profile_image?: string;
+  preferences?: any;
+  tier?: 'free' | 'gold' | 'titanium' | 'adamantium';
+  is_titanium?: boolean;
 }
 
 @Injectable({
@@ -14,27 +20,39 @@ export interface User {
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private apiUrl = 'http://127.0.0.1:5001/auth';
+  // Ensure we use 127.0.0.1 consistency or relative path if proxied. Sticking to 127.0.0.1:5001 is safer for cookies on localhost.
+  private apiUrl = 'http://localhost:5001/auth';
 
   currentUser = signal<User | null>(null);
 
   constructor() {
-    // Check session on load (optional, or call /me)
     this.checkSession();
   }
 
-  checkSession() {
-    return this.http.get<User>(`${this.apiUrl}/me`, { withCredentials: true }).subscribe({
-      next: (user) => this.currentUser.set(user),
-      error: () => this.currentUser.set(null)
-    });
+  checkSession(): Observable<User | null> {
+    return this.http.get<User>(`${this.apiUrl}/me`, { withCredentials: true }).pipe(
+      tap({
+        next: (user) => {
+          // Ensure tier exists if missing from old backend (fallback)
+          if (!user.tier) user.tier = 'free';
+          this.currentUser.set(user);
+        },
+        error: () => this.currentUser.set(null)
+      }),
+      catchError(() => {
+        this.currentUser.set(null);
+        return of(null);
+      })
+    );
   }
 
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, credentials, { withCredentials: true }).pipe(
       tap((res: any) => {
-        if (res.success) {
-          this.currentUser.set({ username: res.user, is_admin: res.is_admin });
+        if (res.success && res.user) {
+          const user = res.user;
+          if (!user.tier) user.tier = 'free'; // Fallback
+          this.currentUser.set(user);
           this.router.navigate(['/dashboard']);
         }
       })
@@ -42,7 +60,17 @@ export class AuthService {
   }
 
   register(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, data, { withCredentials: true });
+    return this.http.post(`${this.apiUrl}/register`, data, { withCredentials: true }).pipe(
+      tap((res: any) => {
+        // Auto login logic if backend returns user
+        if (res.success && res.user) {
+          const user = res.user;
+          if (!user.tier) user.tier = 'free';
+          this.currentUser.set(user);
+          this.router.navigate(['/dashboard']);
+        }
+      })
+    );
   }
 
   logout() {

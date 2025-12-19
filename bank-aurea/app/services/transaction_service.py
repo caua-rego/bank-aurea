@@ -13,6 +13,7 @@ class TransactionService:
         ).order_by(Transaction.timestamp.desc()).all()
 
     def deposit(self, account_id, amount):
+        amount = Decimal(str(amount))
         if amount <= 0:
             raise InvalidTransactionError("Amount must be positive")
             
@@ -20,11 +21,11 @@ class TransactionService:
         if not account:
             raise AccountNotFoundError("Account not found")
             
-        account.balance += Decimal(str(amount))
+        account.balance += amount
         
         transaction = Transaction(
             target_account_id=account.id,
-            amount=Decimal(str(amount)),
+            amount=amount,
             type='deposit'
         )
         db.session.add(transaction)

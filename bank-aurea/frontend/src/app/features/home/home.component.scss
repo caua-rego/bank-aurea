@@ -6,13 +6,28 @@
 /* Nav Header Moved to Global styles.scss */
 
 .hero-section {
-    height: 100vh;
+    min-height: calc(100vh - 60px);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding-top: 60px;
+    /* padding-top removed as sticky nav takes space */
+
+    .cursor-glow-overlay {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background: radial-gradient(180px at var(--glow-x, 50%) var(--glow-y, 50%), rgba(255, 255, 255, 0.9), transparent 60%);
+        filter: blur(55px) brightness(1.25);
+        opacity: var(--glow-strength, 0.7);
+        transition: opacity 0.25s ease, filter 0.25s ease;
+
+        &.hidden {
+            opacity: 0;
+        }
+    }
 
     .hero-title {
         font-size: 6rem;
@@ -44,20 +59,60 @@
 .card-visual-container {
     perspective: 1000px;
     animation: float 6s ease-in-out infinite;
+    transform-style: preserve-3d;
+    position: relative;
+    isolation: isolate;
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: -80px;
+        background: radial-gradient(160px at var(--glow-x, 50%) var(--glow-y, 50%), rgba(255, 255, 255, 0.85), transparent 60%);
+        filter: blur(50px) brightness(1.2);
+        opacity: var(--glow-strength, 0.7);
+        transition: opacity 0.25s ease, filter 0.25s ease;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    &.card-glow-active::before {
+        opacity: var(--glow-strength, 0.7);
+        filter: blur(40px) brightness(1.05);
+    }
+
+    &.cursor-glow-hidden::before {
+        opacity: 0;
+    }
 }
 
 .titanium-card {
+    --tilt-x: 10deg;
+    --tilt-y: -10deg;
+    --tilt-scale: 1;
+    --card-glow-x: 50%;
+    --card-glow-y: 50%;
+    --card-glow-strength: 0;
     width: 340px;
     height: 215px;
     background: linear-gradient(135deg, #e6e6e6 0%, #ffffff 50%, #d1d1d6 100%);
     border-radius: 16px;
     position: relative;
+    z-index: 1;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
-    transform: rotateX(10deg) rotateY(-10deg);
-    transition: transform 0.5s;
+    transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) scale(var(--tilt-scale));
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    will-change: transform;
 
-    &:hover {
-        transform: rotateX(0deg) rotateY(0deg) scale(1.05);
+    &::before {
+        content: '';
+        position: absolute;
+        inset: -20px;
+        background: radial-gradient(180px at var(--card-glow-x, 50%) var(--card-glow-y, 50%), rgba(255, 255, 255, 0.9), transparent 65%);
+        filter: blur(35px) brightness(1.35);
+        opacity: var(--card-glow-strength, 0);
+        transition: opacity 0.18s ease, filter 0.25s ease;
+        pointer-events: none;
+        z-index: -1;
     }
 
     .card-chip {
@@ -88,6 +143,10 @@
         font-family: monospace;
         font-size: 1.2rem;
     }
+}
+
+.card-visual-container:hover .titanium-card {
+    --tilt-scale: 1.05;
 }
 
 .info-section {
