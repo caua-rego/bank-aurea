@@ -5,6 +5,7 @@ from flask_wtf.csrf import CSRFProtect
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_migrate import Migrate
+from flask_jwt_extended import JWTManager
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -13,3 +14,4 @@ csrf = CSRFProtect()
 migrate = Migrate()
 # storage_uri will be provided at init_app time based on configuration
 limiter = Limiter(key_func=get_remote_address, storage_uri=None)
+jwt = JWTManager()

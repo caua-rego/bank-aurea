@@ -6,6 +6,7 @@ Clean Architecture Controller
 """
 from flask import Blueprint, request
 from flask_login import login_user, current_user, logout_user, login_required
+from flask_jwt_extended import create_access_token
 from app.services.auth_service import AuthService
 from app.extensions import limiter
 
@@ -35,7 +36,8 @@ def register():
         user = auth_service.register_user(username, email, password)
         # Auto-login after register
         login_user(user)
-        return {"success": True, "message": "User registered", "user": user.to_dict()}, 201
+        access_token = create_access_token(identity=str(user.id), additional_claims={"is_admin": user.is_admin})
+        return {"success": True, "message": "User registered", "access_token": access_token, "user": user.to_dict()}, 201
     except Exception as e:
          return {"error": str(e)}, 400
 
@@ -43,7 +45,12 @@ def register():
 @limiter.limit("10 per minute")
 def login():
     if current_user.is_authenticated:
-        return {"success": True, "user": current_user.to_dict()}, 200
+        # If already logged in via Session, we might not have a token to return if they just refreshed?
+        # But if they call login, they probably want a token.
+        # Let's verify credentials even if logged in? Or just return user?
+        # Standard behavior: if logged in, just return success. But for JWT we need a token.
+        # So we should probably proceed to authentication to issue a new token.
+        pass 
         
     data = request.get_json()
     if not data:
@@ -55,7 +62,8 @@ def login():
     user = auth_service.authenticate_user(email, password)
     if user:
         login_user(user)
-        return {"success": True, "user": user.to_dict()}, 200
+        access_token = create_access_token(identity=str(user.id), additional_claims={"is_admin": user.is_admin})
+        return {"success": True, "access_token": access_token, "user": user.to_dict()}, 200
     else:
         return {"error": "Invalid credentials"}, 401
 

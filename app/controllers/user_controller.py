@@ -4,7 +4,7 @@ import json
 from flask import Blueprint, request, jsonify, url_for, current_app
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
-import imghdr
+
 from app.extensions import db, csrf
 
 user_bp = Blueprint('user', __name__)
@@ -58,15 +58,32 @@ def update_profile():
             if size > MAX_UPLOAD_BYTES:
                 return jsonify({"error": "File too large"}), 400
 
-            # Basic MIME/format validation
-            head = file.read(512)
-            file.seek(0)
-            detected = imghdr.what(None, h=head)
-            if detected not in ALLOWED_EXTENSIONS:
-                return jsonify({"error": "Invalid image format"}), 400
-
             filename = secure_filename(file.filename)
             extension = filename.rsplit('.', 1)[1].lower()
+
+            # Basic MIME/format validation
+            head = file.read(16)
+            file.seek(0)
+            
+            detected = None
+            if head.startswith(b'\xff\xd8\xff'):
+                detected = 'jpeg' # or jpg
+            elif head.startswith(b'\x89PNG\r\n\x1a\n'):
+                detected = 'png'
+            elif head.startswith(b'GIF87a') or head.startswith(b'GIF89a'):
+                detected = 'gif'
+                
+            if not detected:
+                return jsonify({"error": "Invalid image format"}), 400
+            
+            # Allow jpeg/jpg mismatch
+            if detected == 'jpeg' and extension in ['jpg', 'jpeg']:
+                pass
+            elif detected != extension:
+                 # simple check, mismatch could happen (jpg vs jpeg)
+                 if not (detected == 'jpeg' and extension in ['jpg', 'jpeg']):
+                     return jsonify({"error": "File extension does not match file content"}), 400
+
             unique_filename = str(uuid.uuid4()) + '.' + extension
             
             upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')

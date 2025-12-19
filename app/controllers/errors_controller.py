@@ -1,4 +1,5 @@
 from flask import Blueprint, current_app
+from werkzeug.exceptions import HTTPException
 
 errors_bp = Blueprint('errors', __name__)
 
@@ -16,6 +17,8 @@ def internal_error(error):
 
 @errors_bp.app_errorhandler(Exception)
 def handle_exception(e):
+    if isinstance(e, HTTPException):
+        return e
     try:
         current_app.logger.error("unhandled_error", extra={"error": str(e)})
     except Exception:

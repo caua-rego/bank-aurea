@@ -6,9 +6,9 @@ docs_bp = Blueprint("docs", __name__)
 
 @docs_bp.route("/openapi.yaml")
 def openapi_spec():
-  docs_dir = os.path.abspath(os.path.join(current_app.root_path, '..', 'docs'))
+    docs_dir = os.path.abspath(os.path.join(current_app.root_path, '..', 'docs'))
     return send_from_directory(
-    directory=docs_dir,
+        directory=docs_dir,
         path='openapi.yaml',
         mimetype='application/yaml'
     )

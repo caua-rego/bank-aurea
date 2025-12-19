@@ -22,6 +22,8 @@ DEFAULT_CORS = ["http://localhost:4200", "http://127.0.0.1:4200", "http://localh
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'change-me-in-prod'
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'super-secret-jwt-key'
+    JWT_ACCESS_TOKEN_EXPIRES = 3600 # 1 hour
     SQLALCHEMY_DATABASE_URI = DEFAULT_DB_URL
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     # Flask-WTF CSRF disabled in favor of custom double-submit token in app/__init__.py

@@ -3,7 +3,7 @@ import secrets
 from time import perf_counter
 from flask import Flask, request, session
 from config import config
-from app.extensions import db, login_manager, bcrypt, csrf, migrate, limiter
+from app.extensions import db, login_manager, bcrypt, csrf, migrate, limiter, jwt
 from prometheus_flask_exporter import PrometheusMetrics
 from pythonjsonlogger import jsonlogger
 
@@ -17,11 +17,13 @@ def create_app(config_name='default'):
     bcrypt.init_app(app)
     csrf.init_app(app)
     migrate.init_app(app, db)
-    limiter.init_app(app, storage_uri=app.config.get('RATELIMIT_STORAGE_URI'))
+    limiter.init_app(app)
+    jwt.init_app(app)
 
     # Metrics
-    metrics = PrometheusMetrics(app, group_by="endpoint")
-    metrics.info("app_info", "Aurea application info", version="1.0.0")
+    if not app.config.get('TESTING'):
+        metrics = PrometheusMetrics(app, group_by="endpoint")
+        metrics.info("app_info", "Aurea application info", version="1.0.0")
     
     # CORS
     from flask_cors import CORS
