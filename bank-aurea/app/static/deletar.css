@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;700&display=swap');
+
+:root {
+    --primary-color: #ff6060;
+    --secondary-color: #ff9b9b;
+    --background-gradient: linear-gradient(120deg, #f6d365, #fda085);
+    --text-color: #333;
+    --light-text-color: #880000;
+    --white-color: #fff;
+    --background-color: #fffbe9;
+    --border-color: #ffbcbc;
+    --success-bg: linear-gradient(90deg, #fff0d9, #ffe6bd);
+    --success-text: #6b4a00;
+    --error-bg: linear-gradient(90deg, #ffdede, #ffbcbc);
+    --error-text: #880000;
+    --font-main: 'Roboto', Arial, sans-serif;
+    --font-heading: 'Montserrat', Arial, sans-serif;
+}
+
+body {
+    background: var(--background-gradient);
+    font-family: var(--font-main);
+    margin: 0;
+    padding: 24px;
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.page {
+    max-width: 520px;
+    width: 100%;
+    margin: 24px auto;
+    background: var(--background-color);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.page:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin: 0 0 24px 0;
+    color: var(--primary-color);
+    font-family: var(--font-heading);
+    text-align: center;
+}
+
+.form label {
+    display: block;
+    margin-top: 16px;
+    color: var(--light-text-color);
+    font-weight: 700;
+}
+
+.form input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    margin-top: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(255, 96, 96, 0.3);
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    align-items: center;
+}
+
+button.danger {
+    background: var(--primary-color);
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    color: var(--white-color);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button.danger:hover {
+    background: #e84a4a;
+    transform: translateY(-2px);
+}
+
+a.link {
+    color: var(--light-text-color);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.3s;
+}
+
+a.link:hover {
+    color: var(--primary-color);
+}
+
+.mensagem {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    text-align: center;
+    font-weight: 700;
+}
+
+.mensagem.success {
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+
+.mensagem.error {
+    background: var(--error-bg);
+    color: var(--error-text);
+}
+
+.conta-info {
+    background: var(--white-color);
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 16px;
+    border: 1px solid #ffe9a8;
+}

@@ -1,0 +1,126 @@
+<div class="dashboard-container page-fade-in">
+    <app-navbar></app-navbar>
+
+    <div class="main-content">
+
+        <!-- WALLET SECTION -->
+        <section class="wallet-section">
+            <div class="section-title">My Wallet</div>
+
+            <!-- REALISTIC CARD COMPONENT -->
+            <div class="credit-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="card-chip"></div>
+                        <div class="card-logo">AURÉA <span class="card-type">BLACK</span></div>
+                        <div class="card-number">{{ data()?.card?.number }}</div>
+                        <div class="card-details">
+                            <div class="detail-group">
+                                <span class="label">Card Holder</span>
+                                <span class="value">{{ data()?.card?.holder }}</span>
+                            </div>
+                            <div class="detail-group">
+                                <span class="label">Expires</span>
+                                <span class="value">{{ data()?.card?.expiry }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="balance-display">
+                <span class="label">Current Balance</span>
+                <div class="amount">{{ data()?.account?.balance ?? 0 | currency:'USD' }}</div>
+            </div>
+        </section>
+
+        <!-- OPERATIONS CENTER (ALWAYS VISIBLE) -->
+        <section class="operations-section">
+            <div class="section-title">Operations Center</div>
+
+            <div class="op-grid">
+                <!-- DEPOSIT -->
+                <div class="op-card deposit">
+                    <div class="op-header">
+                        <span class="icon">⬇️</span> Deposit
+                    </div>
+                    <form [formGroup]="amountForm" (ngSubmit)="onDeposit()">
+                        <input type="number" formControlName="amount" placeholder="$ Amount">
+                        <button type="submit" [disabled]="!amountForm.valid || loading">
+                            @if (loading) { ... } @else { Add Funds }
+                        </button>
+                    </form>
+                </div>
+
+                <!-- WITHDRAW -->
+                <div class="op-card withdraw">
+                    <div class="op-header">
+                        <span class="icon">⬆️</span> Withdraw
+                    </div>
+                    <form [formGroup]="amountForm" (ngSubmit)="onWithdraw()">
+                        <input type="number" formControlName="amount" placeholder="$ Amount">
+                        <button type="submit" [disabled]="!amountForm.valid || loading">
+                            @if (loading) { ... } @else { Cash Out }
+                        </button>
+                    </form>
+                </div>
+
+                <!-- TRANSFER -->
+                <div class="op-card transfer">
+                    <div class="op-header">
+                        <span class="icon">↔️</span> Transfer
+                    </div>
+                    <form [formGroup]="transferForm" (ngSubmit)="onTransfer()">
+                        <input type="text" formControlName="target_account" placeholder="Account #">
+                        <input type="number" formControlName="amount" placeholder="$ Amount">
+                        <button type="submit" [disabled]="!transferForm.valid || loading">
+                            @if (loading) { ... } @else { Send }
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- FEEDBACK MESSAGE -->
+            @if (message) {
+            <div class="status-message">{{ message }}</div>
+            }
+        </section>
+
+        <!-- RECENT TRANSACTIONS -->
+        <section class="tx-section">
+            <div class="section-title">Transactions</div>
+            @if (data()?.transactions?.length) {
+            <table class="tx-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th class="right">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (tx of data()!.transactions; track tx.id) {
+                    <tr>
+                        <td>
+                            <span class="tx-badge" [class.in]="tx.type === 'deposit'"
+                                [class.out]="tx.type !== 'deposit'">
+                                {{ tx.type | titlecase }}
+                            </span>
+                        </td>
+                        <td class="dim">{{ tx.timestamp | date:'shortDate' }}</td>
+                        <td class="amount right" [class.pos]="tx.type === 'deposit'"
+                            [class.neg]="tx.type !== 'deposit'">
+                            {{ tx.type === 'deposit' ? '+' : '-' }} {{ tx.amount | currency:'USD' }}
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            } @else {
+            <div class="empty-state">No transactions recorded.</div>
+            }
+        </section>
+
+    </div>
+    <app-footer></app-footer>
+</div>

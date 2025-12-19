@@ -1,0 +1,106 @@
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #000000;
+    /* Deep Black for max contrast */
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 440px;
+    padding: 60px 40px;
+    text-align: center;
+
+    h2 {
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin-bottom: 50px;
+        color: white;
+        letter-spacing: -0.5px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-group {
+        position: relative;
+
+        input {
+            width: 100%;
+            background: transparent;
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 18px 20px;
+            font-size: 17px;
+            color: white;
+            transition: all 0.2s ease;
+
+            &:focus {
+                border-color: #2997ff;
+                /* Apple Blue focus */
+                box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.2);
+                outline: none;
+            }
+
+            &::placeholder {
+                color: #666;
+            }
+        }
+    }
+
+    button {
+        margin-top: 20px;
+        width: 100%;
+        padding: 18px;
+        border-radius: 12px;
+        font-size: 17px;
+        font-weight: 600;
+        cursor: pointer;
+        background: #007aff;
+        /* System Blue */
+        color: white;
+        border: none;
+        transition: transform 0.1s, background-color 0.2s;
+
+        &:hover {
+            background: #0077ed;
+        }
+
+        &:active {
+            transform: scale(0.98);
+        }
+
+        &:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+        }
+    }
+
+    .links {
+        margin-top: 40px;
+        font-size: 14px;
+
+        a {
+            color: #2997ff;
+            text-decoration: none;
+            font-weight: 500;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .error {
+        color: #ff453a;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+}

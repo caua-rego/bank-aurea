@@ -1,0 +1,22 @@
+<div class="login-container">
+    <h2>Log in to Auréa</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <input id="email" type="email" placeholder="Email or Phone Number" formControlName="email">
+        </div>
+        <div class="form-group">
+            <input id="password" type="password" placeholder="Password" formControlName="password">
+        </div>
+
+        @if (errorMessage) {
+        <div class="error">{{ errorMessage }}</div>
+        }
+
+        <button type="submit" [disabled]="!loginForm.valid">Continue</button>
+        <div class="links">
+            Don't have an ID? <a routerLink="/register">Create yours now.</a>
+            <br><br>
+            <a routerLink="/">Back to Home</a>
+        </div>
+    </form>
+</div>

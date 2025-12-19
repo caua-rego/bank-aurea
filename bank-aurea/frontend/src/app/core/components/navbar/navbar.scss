@@ -1,0 +1,120 @@
+.global-nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    height: 60px;
+
+    @media (prefers-color-scheme: dark) {
+        background: rgba(0, 0, 0, 0.85);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}
+
+.nav-content {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #1d1d1f;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    @media (prefers-color-scheme: dark) {
+        color: white;
+    }
+
+    .logo-symbol {
+        color: #d4a017;
+        font-size: 1.2rem;
+    }
+}
+
+.desktop-menu {
+    display: flex;
+    gap: 30px;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
+
+    /* Mobile Hide */
+
+    a {
+        color: #424245;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+
+        &:hover,
+        &.active {
+            color: #1d1d1f;
+
+            @media (prefers-color-scheme: dark) {
+                color: white;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            color: #a1a1a6;
+        }
+    }
+}
+
+.auth-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    .btn-text {
+        font-size: 0.85rem;
+        color: #1d1d1f;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            color: white;
+        }
+    }
+
+    .btn-primary {
+        background: #0071e3;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 14px;
+        font-size: 0.8rem;
+        text-decoration: none;
+        transition: background 0.2s;
+
+        &:hover {
+            background: #0077ed;
+        }
+    }
+
+    .btn-dash {
+        color: #0071e3;
+        font-weight: 500;
+        text-decoration: none;
+        font-size: 0.9rem;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}

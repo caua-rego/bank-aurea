@@ -1,0 +1,26 @@
+<nav class="global-nav">
+    <div class="nav-content">
+        <!-- Brand -->
+        <a routerLink="/" class="brand">
+            <span class="logo-symbol">✦</span> Bank Auréa
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="desktop-menu">
+            <a routerLink="/loans" routerLinkActive="active">Loans</a>
+            <a routerLink="/credit-cards" routerLinkActive="active">Cards</a>
+            <a routerLink="/investments" routerLinkActive="active">Investments</a>
+            <a routerLink="/business" routerLinkActive="active">Business</a>
+        </div>
+
+        <!-- Auth Actions -->
+        <div class="auth-actions">
+            @if (user()) {
+            <a routerLink="/dashboard" class="btn-dash">Dashboard</a>
+            } @else {
+            <a routerLink="/login" class="btn-text">Sign In</a>
+            <a routerLink="/register" class="btn-primary">Open Account</a>
+            }
+        </div>
+    </div>
+</nav>

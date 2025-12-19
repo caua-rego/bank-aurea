@@ -1,0 +1,11 @@
+Flask
+Flask-SQLAlchemy
+Flask-Login
+Flask-Bcrypt
+Flask-WTF
+Flask-Migrate
+Flask-Limiter
+Flask-Cors
+email_validator
+gunicorn
+pytest

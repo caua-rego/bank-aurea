@@ -1,0 +1,245 @@
+/* Global Liquid Glass Design System */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=SF+Pro+Display:wght@100;400;600;700&display=swap');
+
+:root {
+  /* Liquid Palette */
+  --bg-dark: #000000;
+  --glass-surface: rgba(255, 255, 255, 0.08);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.15);
+  --glass-highlight: rgba(255, 255, 255, 0.2);
+  --glass-blur: blur(40px);
+  --glass-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+
+  --accent-gold: #d4a017;
+  --accent-blue: #0A84FF;
+  --accent-danger: #FF453A;
+
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.6);
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: "SF Pro Display", "Inter", sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  /* Animated Mesh Gradient Background */
+  background-image:
+    radial-gradient(at 0% 0%, rgba(212, 160, 23, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(10, 132, 255, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(255, 69, 58, 0.1) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* Typography */
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Liquid Card Mixin */
+.liquid-card {
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  /* Safari */
+  border: var(--glass-border);
+  border-top: 1px solid var(--glass-highlight);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
+}
+
+/* Global Nav */
+.nav-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  z-index: 1000;
+  box-sizing: border-box;
+
+  /* Floating Glass Nav */
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+  .brand {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    letter-spacing: 1px;
+  }
+
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-left: 20px;
+    transition: color 0.3s;
+
+    &:hover {
+      color: white;
+    }
+  }
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px;
+  border-radius: 12px;
+  color: white;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s;
+
+  &:focus {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 4px rgba(212, 160, 23, 0.1);
+  }
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Buttons */
+button {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &.btn-primary {
+    background: white;
+    color: black;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  &.btn-gold {
+    background: linear-gradient(135deg, #d4a017 0%, #f1c40f 100%);
+    color: black;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(212, 160, 23, 0.2);
+    }
+  }
+}
+
+/* SMOOTHNESS ENGINE */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.page-fade-in {
+  animation: pageFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+@keyframes pageFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.container-centered {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+a {
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+button {
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease;
+}
+
+/* STICKY FOOTER ENGINE */
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-flex-grow {
+  flex: 1;
+}
+
+/* Ensure all route components fill space */
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+app-home,
+app-login,
+app-register,
+app-dashboard,
+app-privacy,
+app-terms,
+app-loans,
+app-credit-cards,
+app-investments,
+app-business,
+app-help,
+app-contact,
+app-status,
+app-compliance {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+}
+
+/* Force footer to bottom */
+.public-page,
+.main-content,
+.dashboard-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* If app-footer is a direct child of the flex container, margin-top: auto handles it */
+app-footer {
+  margin-top: auto;
+  display: block;
+}

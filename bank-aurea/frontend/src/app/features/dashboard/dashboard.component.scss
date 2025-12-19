@@ -1,0 +1,345 @@
+.dashboard-container {
+    min-height: 100vh;
+    /* Navbar handles top spacing/padding logic */
+    padding-bottom: 80px;
+}
+
+.main-content {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    @media (prefers-color-scheme: dark) {
+        color: white;
+    }
+}
+
+/* 1. Wallet & Card Section */
+.wallet-section {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .section-title {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+.credit-card {
+    width: 380px;
+    height: 240px;
+    background: linear-gradient(135deg, #1c1c1e 0%, #3a3a3c 100%);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    position: relative;
+    color: white;
+    padding: 30px;
+    box-sizing: border-box;
+    font-family: "Courier New", monospace;
+    transition: transform 0.3s;
+
+    &:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-chip {
+        width: 50px;
+        height: 35px;
+        background: linear-gradient(135deg, #d4a017 0%, #f1c40f 100%);
+        border-radius: 6px;
+        margin-bottom: 30px;
+    }
+
+    .card-logo {
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+
+        .card-type {
+            font-weight: 300;
+            color: #aaa;
+            margin-left: 5px;
+        }
+    }
+
+    .card-number {
+        font-size: 1.6rem;
+        letter-spacing: 2px;
+        margin-bottom: 30px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-details {
+        display: flex;
+        justify-content: space-between;
+
+        .label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            color: #888;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .value {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    }
+}
+
+.balance-display {
+    flex: 1;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    height: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+
+    @media (prefers-color-scheme: dark) {
+        background: #1c1c1e;
+    }
+
+    .label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+    .amount {
+        font-size: 4rem;
+        font-weight: 700;
+        color: #1d1d1f;
+        letter-spacing: -2px;
+
+        @media (prefers-color-scheme: dark) {
+            color: white;
+        }
+    }
+}
+
+/* 2. Operations Grid */
+.op-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.op-card {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+
+    @media (prefers-color-scheme: dark) {
+        background: #1c1c1e;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .op-header {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #333;
+
+        @media (prefers-color-scheme: dark) {
+            color: white;
+        }
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #f9f9f9;
+        font-size: 1rem;
+
+        &:focus {
+            outline: none;
+            border-color: #000;
+            background: white;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            background: #000;
+            border-color: #333;
+            color: white;
+        }
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        font-weight: 600;
+        border-radius: 8px;
+        background: #000;
+        color: white;
+
+        &:disabled {
+            opacity: 0.5;
+        }
+
+        &:hover:not(:disabled) {
+            background: #333;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            background: white;
+            color: black;
+
+            &:hover:not(:disabled) {
+                background: #ccc;
+            }
+        }
+    }
+
+    &.deposit .op-header {
+        color: #2ecc71;
+    }
+
+    &.withdraw .op-header {
+        color: #e74c3c;
+    }
+
+    &.transfer .op-header {
+        color: #3498db;
+    }
+}
+
+.status-message {
+    padding: 15px;
+    background: #27ae60;
+    color: white;
+    text-align: center;
+    border-radius: 8px;
+    margin-top: 20px;
+    animation: fadeOut 4s forwards;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* 3. Transaction Table */
+.tx-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+
+    @media (prefers-color-scheme: dark) {
+        background: #1c1c1e;
+    }
+
+    th {
+        text-align: left;
+        padding: 15px 20px;
+        background: #f9f9f9;
+        color: #666;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+
+        @media (prefers-color-scheme: dark) {
+            background: #2c2c2e;
+            color: #aaa;
+        }
+    }
+
+    td {
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+        color: #333;
+
+        @media (prefers-color-scheme: dark) {
+            border-color: #333;
+            color: white;
+        }
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    .right {
+        text-align: right;
+    }
+
+    .dim {
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    .tx-badge {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+
+        &.in {
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+        }
+
+        &.out {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+    }
+
+    .amount {
+        font-family: monospace;
+        font-weight: 600;
+
+        &.pos {
+            color: #2ecc71;
+        }
+
+        &.neg {
+            color: #333;
+
+            @media (prefers-color-scheme: dark) {
+                color: white;
+            }
+        }
+    }
+}

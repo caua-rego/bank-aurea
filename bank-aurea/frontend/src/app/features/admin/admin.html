@@ -1,0 +1,61 @@
+<div class="admin-wrapper">
+    <div class="glass-container">
+        <header>
+            <h1>Admin Command</h1>
+            <div class="badge">SECURE LEVEL 5</div>
+        </header>
+
+        @if (data()) {
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="label">Total Users</div>
+                <div class="value">{{ data()!.stats.total_users }}</div>
+            </div>
+            <div class="stat-card gold">
+                <div class="label">Total Reserves</div>
+                <div class="value">{{ data()!.stats.total_reservs | currency:'USD' }}</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Balance</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (user of data()!.users; track user.id) {
+                    <tr>
+                        <td>#{{ user.id }}</td>
+                        <td>
+                            <div class="user-cell">
+                                <div class="avatar">{{ user.username.charAt(0) | uppercase }}</div>
+                                {{ user.username }}
+                            </div>
+                        </td>
+                        <td class="dim">{{ user.email }}</td>
+                        <td>{{ user.balance | currency:'USD' }}</td>
+                        <td>
+                            <span class="role-badge" [class.admin]="user.is_admin">
+                                {{ user.is_admin ? 'Admin' : 'User' }}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn-action">Edit</button>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        } @else {
+        <div class="loading">Authenticating Admin Access...</div>
+        }
+    </div>
+</div>

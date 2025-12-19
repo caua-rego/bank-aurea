@@ -1,0 +1,25 @@
+<div class="login-container">
+    <h2>Create your Auréa ID</h2>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <input id="username" type="text" placeholder="Full Name" formControlName="username">
+        </div>
+        <div class="form-group">
+            <input id="email" type="email" placeholder="name@example.com" formControlName="email">
+        </div>
+        <div class="form-group">
+            <input id="password" type="password" placeholder="Password" formControlName="password">
+        </div>
+
+        @if (errorMessage) {
+        <div class="error">{{ errorMessage }}</div>
+        }
+
+        <button type="submit" [disabled]="!registerForm.valid">Continue</button>
+        <div class="links">
+            Already have an ID? <a routerLink="/login">Log in here.</a>
+            <br><br>
+            <a routerLink="/">Back to Home</a>
+        </div>
+    </form>
+</div>
