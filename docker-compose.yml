@@ -1,0 +1,56 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: aurea
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    command: redis-server --save "" --appendonly no
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      FLASK_CONFIG: production
+      SECRET_KEY: change-me
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@db:5432/aurea
+      RATELIMIT_STORAGE_URI: redis://redis:6379/0
+      ENABLE_HSTS: "true"
+      SESSION_COOKIE_SECURE: "true"
+      REMEMBER_COOKIE_SECURE: "true"
+    ports:
+      - "5001:5001"
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    depends_on:
+      backend:
+        condition: service_started
+    ports:
+      - "4200:80"
+
+volumes:
+  db_data:

@@ -24,19 +24,36 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'change-me-in-prod'
     SQLALCHEMY_DATABASE_URI = DEFAULT_DB_URL
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    WTF_CSRF_ENABLED = False  # API mode; reconsider if using cookies cross-site
+    # Flask-WTF CSRF disabled in favor of custom double-submit token in app/__init__.py
+    WTF_CSRF_ENABLED = _bool_env('WTF_CSRF_ENABLED', False)
+    WTF_CSRF_CHECK_DEFAULT = False
+    WTF_CSRF_METHODS = ["POST", "PUT", "PATCH", "DELETE"]
 
     # Security / cookies
     SESSION_COOKIE_SAMESITE = os.environ.get('SESSION_COOKIE_SAMESITE', 'Lax')
     SESSION_COOKIE_SECURE = _bool_env('SESSION_COOKIE_SECURE', False)
+    SESSION_COOKIE_HTTPONLY = _bool_env('SESSION_COOKIE_HTTPONLY', True)
     REMEMBER_COOKIE_SAMESITE = os.environ.get('REMEMBER_COOKIE_SAMESITE', 'Lax')
     REMEMBER_COOKIE_SECURE = _bool_env('REMEMBER_COOKIE_SECURE', False)
+    REMEMBER_COOKIE_HTTPONLY = _bool_env('REMEMBER_COOKIE_HTTPONLY', True)
+
+    # Content limits and upload policy
+    MAX_CONTENT_LENGTH = int(os.environ.get('MAX_CONTENT_LENGTH', 2 * 1024 * 1024))  # 2MB default
 
     # CORS
     CORS_ALLOWED_ORIGINS = _list_env('CORS_ALLOWED_ORIGINS', DEFAULT_CORS)
 
     # Rate limiting storage (Redis recomendado para prod)
     RATELIMIT_STORAGE_URI = os.environ.get('RATELIMIT_STORAGE_URI', 'redis://localhost:6379/0')
+
+    # Security headers
+    CSP_POLICY = os.environ.get(
+        'CSP_POLICY',
+        "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:; font-src 'self' data:"
+    )
+    ENABLE_HSTS = _bool_env('ENABLE_HSTS', False)
+    OTEL_EXPORTER_OTLP_ENDPOINT = os.environ.get('OTEL_EXPORTER_OTLP_ENDPOINT')
+    ENABLE_OTEL = _bool_env('ENABLE_OTEL', False)
 
 
 class DevelopmentConfig(Config):

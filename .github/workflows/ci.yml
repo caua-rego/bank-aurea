@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: aurea
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready -U postgres
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install system deps
+        run: sudo apt-get update && sudo apt-get install -y libpq-dev gcc
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Lint (ruff)
+        run: ruff check .
+      - name: Type check (mypy)
+        run: mypy app
+      - name: Security scan (bandit)
+        run: bandit -q -r app
+      - name: Semgrep SAST
+        run: semgrep scan --config p/ci --error
+      - name: Run tests
+        env:
+          FLASK_CONFIG: testing
+          DATABASE_URL: postgresql+psycopg2://postgres:postgres@localhost:5432/aurea
+          RATELIMIT_STORAGE_URI: memory://
+        run: pytest -q
+      - name: Secret scan
+        uses: trufflesecurity/trufflehog@v3
+        with:
+          path: .
+
+  dast-zap:
+    runs-on: ubuntu-latest
+    needs: build-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Start app
+        env:
+          FLASK_APP: run.py
+          FLASK_CONFIG: development
+          DATABASE_URL: sqlite:///zap.db
+          RATELIMIT_STORAGE_URI: memory://
+          SECRET_KEY: zap-secret
+        run: |
+          flask db upgrade
+          flask run --host=0.0.0.0 --port=5001 &
+          echo $! > app.pid
+          sleep 5
+      - name: ZAP baseline scan
+        uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: "http://127.0.0.1:5001/healthz"
+          fail_action: false
+      - name: Stop app
+        run: kill $(cat app.pid)
+  dependabot:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Dependabot handled by GitHub native config"

@@ -93,3 +93,33 @@ def test_profile_upload_with_preferences(client, app):
     assert data["success"] is True
     assert data["user"]["preferences"]["lang"] == "pt-BR"
     assert data["user"]["profile_image"]
+
+
+def test_profile_upload_rejects_large_file(client):
+    register(client, "dave", "dave@test.com")
+    login(client, "dave@test.com")
+
+    big_bytes = io.BytesIO(b"0" * (3 * 1024 * 1024))
+    resp = client.put(
+        "/users/profile",
+        data={"profile_image": (big_bytes, "big.png")},
+        content_type="multipart/form-data",
+    )
+    assert resp.status_code in (400, 413)
+
+
+def test_insufficient_funds_error(client, app):
+    register(client, "eve", "eve@test.com")
+    login(client, "eve@test.com")
+
+    resp = client.post("/withdraw", json={"amount": "1000000.00"})
+    assert resp.status_code == 400 or resp.status_code == 500
+
+
+def test_rate_limit_register(client):
+    for i in range(5):
+        resp = register(client, f"u{i}", f"u{i}@test.com")
+        assert resp.status_code in (201, 400)
+
+    resp = register(client, "rate", "rate@test.com")
+    assert resp.status_code == 429

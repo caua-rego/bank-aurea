@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, current_app
 
 errors_bp = Blueprint('errors', __name__)
 
@@ -16,4 +16,8 @@ def internal_error(error):
 
 @errors_bp.app_errorhandler(Exception)
 def handle_exception(e):
-    return {"error": str(e)}, 500
+    try:
+        current_app.logger.error("unhandled_error", extra={"error": str(e)})
+    except Exception:
+        pass
+    return {"error": "Internal Server Error"}, 500

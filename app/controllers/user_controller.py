@@ -4,11 +4,13 @@ import json
 from flask import Blueprint, request, jsonify, url_for, current_app
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
+import imghdr
 from app.extensions import db, csrf
 
 user_bp = Blueprint('user', __name__)
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+MAX_UPLOAD_BYTES = 2 * 1024 * 1024  # 2MB cap
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -43,12 +45,26 @@ def update_profile():
             if isinstance(prefs, dict):
                 current_user.preferences = json.dumps(prefs)
             else:
-                current_user.preferences = prefs
+                # reject non-dict preferences when JSON
+                return jsonify({"error": "preferences must be an object"}), 400
                 
     # Handle File Upload
     if 'profile_image' in request.files:
         file = request.files['profile_image']
         if file and file.filename != '' and allowed_file(file.filename):
+            file.seek(0, os.SEEK_END)
+            size = file.tell()
+            file.seek(0)
+            if size > MAX_UPLOAD_BYTES:
+                return jsonify({"error": "File too large"}), 400
+
+            # Basic MIME/format validation
+            head = file.read(512)
+            file.seek(0)
+            detected = imghdr.what(None, h=head)
+            if detected not in ALLOWED_EXTENSIONS:
+                return jsonify({"error": "Invalid image format"}), 400
+
             filename = secure_filename(file.filename)
             extension = filename.rsplit('.', 1)[1].lower()
             unique_filename = str(uuid.uuid4()) + '.' + extension

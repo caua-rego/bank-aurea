@@ -16,6 +16,7 @@ API bancária em Flask com front-end Angular. O backend expõe autenticação, c
 - Node.js 20+ / npm 11+ (para o front)
 - Postgres 14+ (default) ou outro banco compatível com SQLAlchemy
 - Redis (para rate limiting em produção; em teste cai para memória)
+ - Docker/Docker Compose (opcional, recomendado para prod/dev)
 
 ## Como rodar rápido (backend)
 
@@ -32,6 +33,11 @@ export FLASK_CONFIG=development
 export SECRET_KEY="troque-este-valor"          # obrigatória em produção
 export DATABASE_URL="postgresql+psycopg2://postgres:postgres@localhost:5432/aurea"
 export RATELIMIT_STORAGE_URI="redis://localhost:6379/0"  # default já é Redis
+export ENABLE_HSTS="true"                               # em produção/HTTPS
+export SESSION_COOKIE_SECURE="true"
+export REMEMBER_COOKIE_SECURE="true"
+export ENABLE_OTEL="false"                              # troque para true se tiver collector
+export OTEL_EXPORTER_OTLP_ENDPOINT="http://otel-collector:4318/v1/traces"
 ```
 
 3) Suba o schema (usa Alembic/Flask-Migrate):
@@ -89,6 +95,35 @@ O backend permite origens `localhost:4200` e `localhost:5001` por padrão. Se o 
 - `FLASK_CONFIG` — `development` (padrão), `testing`, `production`.
 - `RATELIMIT_STORAGE_URI` — default Redis local; em teste troca para memória.
 - `SESSION_COOKIE_SECURE` / `REMEMBER_COOKIE_SECURE` — ajuste para `True` em HTTPS.
+- `ENABLE_HSTS` — habilita Strict-Transport-Security.
+- `ENABLE_OTEL` / `OTEL_EXPORTER_OTLP_ENDPOINT` — ativa tracing OTLP.
+
+## Segurança em produção
+
+- Cookies `Secure`/`HttpOnly`/`SameSite` configuráveis; habilite `SESSION_COOKIE_SECURE=true` e `ENABLE_HSTS=true` atrás de HTTPS.
+- CSRF: double-submit token via cookie `XSRF-TOKEN` + header `X-XSRF-TOKEN` para métodos não-idempotentes.
+- Cabeçalhos: CSP, X-Frame-Options=DENY, X-Content-Type-Options=nosniff, Referrer-Policy=no-referrer.
+- Uploads: limite 2MB, validação de extensão e MIME (imghdr).
+
+## Docker/Compose
+
+```bash
+docker-compose up --build
+```
+
+Expõe backend em `:5001`, front em `:4200`, Postgres e Redis internos. O entrypoint executa `flask db upgrade` antes do gunicorn.
+
+## Observabilidade
+
+- Métricas Prometheus em `/metrics`.
+- Health check em `/healthz`.
+- Logging estruturado JSON.
+- Tracing OTLP opcional (habilitar env acima).
+
+## Docs da API
+
+- OpenAPI: [docs/openapi.yaml](docs/openapi.yaml)
+- ReDoc: `GET /docs`
 
 ## Observações de segurança e operações
 
