@@ -57,7 +57,7 @@ jobs:
           RATELIMIT_STORAGE_URI: memory://
         run: pytest -q
       - name: Secret scan
-        uses: trufflesecurity/trufflehog@v3
+        uses: trufflesecurity/trufflehog@v3.68.6
         with:
           path: .
 
